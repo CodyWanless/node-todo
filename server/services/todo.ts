@@ -1,5 +1,5 @@
-const { ObjectID } = require('mongodb');
-const _ = require('lodash');
+import { ObjectID } from 'mongodb';
+import * as _ from 'lodash';
 
 const { Todo } = require('../models/todo');
 

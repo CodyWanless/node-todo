@@ -1,7 +1,7 @@
-const { ObjectID } = require('mongodb');
-const _ = require('lodash');
+import { ObjectID } from 'mongodb';
+import * as _ from 'lodash';
 
-const { User } = require('../models/user');
+import { User } from '../models/user';
 
 module.exports = (app, authenticate) => {
 	app.post('/users', async (req, res) => {

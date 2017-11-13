@@ -1,9 +1,8 @@
-require('./config/config');
+require('./config/config.ts');
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const { ObjectID } = require('mongodb');
-const _ = require('lodash');
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
+import * as _ from 'lodash';
 
 const { mongoose } = require('./db/mongoose');
 const { authenticate } = require('./middleware/authenticate');
@@ -20,4 +19,4 @@ app.listen(port, () => {
 	console.log(`Started on port ${port}`);
 });
 
-module.exports = { app };
+export { app };
