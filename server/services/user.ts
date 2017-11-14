@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 
 import { User } from '../models/user';
 
-module.exports = (app, authenticate) => {
+const registerRoutes = (app, authenticate) => {
 	app.post('/users', async (req, res) => {
 		const body = _.pick(req.body, ['email', 'password']);
 		var user = new User(body);
@@ -42,3 +42,5 @@ module.exports = (app, authenticate) => {
 		}
 	});
 };
+
+export default registerRoutes;

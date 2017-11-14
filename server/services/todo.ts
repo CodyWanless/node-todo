@@ -1,16 +1,14 @@
 import { ObjectID } from 'mongodb';
 import * as _ from 'lodash';
 
-const { Todo } = require('../models/todo');
+import { Todo } from '../models/todo';
+import { TodoFactory } from '../models/todo-factory';
 
-module.exports = (app, authenticate) => {
+const registerRoutes = (app, authenticate) => {
 	app.post('/todos', authenticate, async (req, res) => {
-		var todo = new Todo({
-			text: req.body.text,
-			_creator: req.user._id
-		});
-
 		try {
+			const todo = TodoFactory.createFromRequest(req.body);
+
 			const doc = await todo.save();
 			res.send(doc);
 		} catch (err) {
@@ -75,12 +73,17 @@ module.exports = (app, authenticate) => {
 
 	app.patch('/todos/:id', authenticate, async (req, res) => {
 		const todoId = req.params.id;
-		const body = _.pick(req.body, ['text', 'completed']);
-
 		if (!ObjectID.isValid(todoId)) {
 			return res.status(404).send();
 		}
 
+		const body = _.pick(req.body, [
+			'text',
+			'completed',
+			'priority',
+			'checklistItems',
+			'completeBy'
+		]);
 		if (_.isBoolean(body.completed) && body.completed) {
 			body.completedAt = new Date().getTime();
 		} else {
@@ -108,3 +111,5 @@ module.exports = (app, authenticate) => {
 		}
 	});
 };
+
+export default registerRoutes;

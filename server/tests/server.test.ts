@@ -2,7 +2,7 @@ import * as expect from 'expect';
 import * as request from 'supertest';
 import { ObjectID } from 'mongodb';
 
-import { app } from './../server';
+import app from './../server';
 import { Todo } from './../models/todo';
 import { User } from './../models/user';
 import { todos, populateTodos, users, populateUsers } from './seed/seed';

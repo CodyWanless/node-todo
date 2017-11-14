@@ -1,0 +1,10 @@
+{
+	"development": {
+		"MONGODB_URI": "localhost:27017/dev",
+		"JWT_SECRET": "thisisaverysecretsalt12346"
+	},
+	"test": {
+		"MONGODB_URI": "localhost:27017/test",
+		"JWT_SECRET": "thisisaverysecretsalt12346"
+	}
+}

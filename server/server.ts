@@ -1,22 +1,9 @@
-require('./config/config.ts');
+import './config/config';
+import './db/mongoose';
 
-import * as express from 'express';
-import * as bodyParser from 'body-parser';
-import * as _ from 'lodash';
+import App from './app';
 
-const { mongoose } = require('./db/mongoose');
-const { authenticate } = require('./middleware/authenticate');
+const app = new App();
+app.start();
 
-var app = express();
-const port = process.env.PORT || 3000;
-
-app.use(bodyParser.json());
-
-require('./services/todo')(app, authenticate);
-require('./services/user')(app, authenticate);
-
-app.listen(port, () => {
-	console.log(`Started on port ${port}`);
-});
-
-export { app };
+export default app.expressApp;

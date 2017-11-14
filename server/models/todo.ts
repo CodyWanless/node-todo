@@ -1,7 +1,13 @@
 import { Schema, model } from 'mongoose';
-import { TodoPriority } from './todo-priority';
 
-var todoSchema = new Schema({
+const enum TodoPriority {
+	Low = 1,
+	Medium,
+	High,
+	Urgent
+}
+
+const todoSchema = new Schema({
 	text: {
 		type: String,
 		required: true,
@@ -16,6 +22,10 @@ var todoSchema = new Schema({
 		type: Number,
 		default: null
 	},
+	completeBy: {
+		type: Number,
+		default: null
+	},
 	_creator: {
 		required: true,
 		type: Schema.Types.ObjectId
@@ -23,7 +33,7 @@ var todoSchema = new Schema({
 	priority: {
 		type: Object,
 		required: true,
-		default: TodoPriority.MEDIUM
+		default: TodoPriority.Medium
 	}
 });
 
@@ -31,4 +41,4 @@ todoSchema.add({ checklistItems: [todoSchema] });
 
 const Todo = model('Todo', todoSchema);
 
-export { Todo };
+export { Todo, TodoPriority };

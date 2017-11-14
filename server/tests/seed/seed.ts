@@ -52,8 +52,6 @@ const todos = [
 ];
 
 const populateTodos = done => {
-	console.log(secretKey);
-
 	Todo.remove({})
 		.then(() => {
 			return Todo.insertMany(todos);
@@ -63,8 +61,6 @@ const populateTodos = done => {
 };
 
 const populateUsers = done => {
-	console.log(secretKey);
-
 	User.remove({})
 		.then(() => {
 			var userOne = new User(users[0]).save();
