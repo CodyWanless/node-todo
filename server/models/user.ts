@@ -1,10 +1,17 @@
 import * as validator from 'validator';
-import * as mongoose from 'mongoose';
+import { Schema, model, Document, Model } from 'mongoose';
 import * as jwt from 'jsonwebtoken';
 import * as _ from 'lodash';
 import * as bcrypt from 'bcryptjs';
+import { IUser, AccessToken } from '../interfaces/user';
 
-const userSchema = new mongoose.Schema({
+export interface IUserModel extends IUser, Document {
+	toJSON(): Function;
+	generateAuthToken(): Function;
+	removeToken(token: AccessToken): Function;
+}
+
+const userSchema = new Schema({
 	email: {
 		type: String,
 		required: true,
@@ -109,6 +116,4 @@ userSchema.pre('save', function(next) {
 	}
 });
 
-const User = mongoose.model('User', userSchema);
-
-export { User };
+export const User: Model<IUserModel> = model<IUserModel>('User', userSchema);

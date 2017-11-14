@@ -34,6 +34,12 @@ const todoSchema = new Schema({
 		type: Object,
 		required: true,
 		default: TodoPriority.Medium
+	},
+	comment: {
+		type: String,
+		required: false,
+		trim: true,
+		default: null
 	}
 });
 

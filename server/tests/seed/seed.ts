@@ -1,6 +1,6 @@
 import { ObjectID } from 'mongodb';
-const { Todo } = require('./../../models/todo');
-const { User } = require('./../../models/user');
+import { Todo } from './../../models/todo';
+import { User } from './../../models/user';
 import * as jwt from 'jsonwebtoken';
 
 const secretKey: string = process.env.JWT_SECRET as string;

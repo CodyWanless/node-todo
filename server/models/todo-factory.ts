@@ -7,6 +7,7 @@ export class TodoFactory {
 			completeBy: requestBody.completeBy,
 			checklistItems: requestBody.checklistItems,
 			priority: this.convertTodoPriority(requestBody.priority),
+			comment: requestBody.comment,
 			_creator: requestBody.user._id
 		});
 	}
