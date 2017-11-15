@@ -1,18 +1,20 @@
-import { Todo, TodoPriority } from './todo';
+import { TodoPriority, ITodoDocument } from '../interfaces/todo';
+import { Todo } from './todo';
 
 export class TodoFactory {
-	public static createFromRequest(requestBody) {
+	public static createFromRequest(requestBody, userId): ITodoDocument {
 		return new Todo({
 			text: requestBody.text,
 			completeBy: requestBody.completeBy,
 			checklistItems: requestBody.checklistItems,
 			priority: this.convertTodoPriority(requestBody.priority),
 			comment: requestBody.comment,
-			_creator: requestBody.user._id
+			_creator: userId,
+			createdAt: new Date().getTime()
 		});
 	}
 
-	private static convertTodoPriority(priority) {
+	private static convertTodoPriority(priority): TodoPriority {
 		switch (priority) {
 			case 1:
 				return TodoPriority.Low;

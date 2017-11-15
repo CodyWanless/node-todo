@@ -1,11 +1,5 @@
-import { Schema, model } from 'mongoose';
-
-const enum TodoPriority {
-	Low = 1,
-	Medium,
-	High,
-	Urgent
-}
+import { Schema, model, Model } from 'mongoose';
+import { ITodoDocument, TodoPriority } from '../interfaces/todo';
 
 const todoSchema = new Schema({
 	text: {
@@ -45,6 +39,7 @@ const todoSchema = new Schema({
 
 todoSchema.add({ checklistItems: [todoSchema] });
 
-const Todo = model('Todo', todoSchema);
-
-export { Todo, TodoPriority };
+export const Todo: Model<ITodoDocument> = model<ITodoDocument>(
+	'Todo',
+	todoSchema
+);

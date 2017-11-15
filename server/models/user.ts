@@ -3,12 +3,17 @@ import { Schema, model, Document, Model } from 'mongoose';
 import * as jwt from 'jsonwebtoken';
 import * as _ from 'lodash';
 import * as bcrypt from 'bcryptjs';
-import { IUser, AccessToken } from '../interfaces/user';
+import { IUserDocument, AccessToken } from '../interfaces/user';
 
-export interface IUserModel extends IUser, Document {
-	toJSON(): Function;
-	generateAuthToken(): Function;
-	removeToken(token: AccessToken): Function;
+export interface IUser extends IUserDocument {
+	toJSON(): string;
+	generateAuthToken(): string;
+	removeToken(token: AccessToken): [string];
+}
+
+export interface IUserModel extends Model<IUser> {
+	findByToken(token: string): IUser;
+	findByCredentials(email: string, password: string): IUser;
 }
 
 const userSchema = new Schema({
@@ -116,4 +121,4 @@ userSchema.pre('save', function(next) {
 	}
 });
 
-export const User: Model<IUserModel> = model<IUserModel>('User', userSchema);
+export const User: IUserModel = model<IUser, IUserModel>('User', userSchema);

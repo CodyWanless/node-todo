@@ -7,8 +7,7 @@ import { TodoFactory } from '../models/todo-factory';
 const registerRoutes = (app, authenticate) => {
 	app.post('/todos', authenticate, async (req, res) => {
 		try {
-			const todo = TodoFactory.createFromRequest(req.body);
-
+			const todo = TodoFactory.createFromRequest(req.body, req.user._id);
 			const doc = await todo.save();
 			res.send(doc);
 		} catch (err) {

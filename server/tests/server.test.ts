@@ -4,7 +4,7 @@ import { ObjectID } from 'mongodb';
 
 import app from './../server';
 import { Todo } from './../models/todo';
-import { User } from './../models/user';
+import { User, IUser } from './../models/user';
 import { todos, populateTodos, users, populateUsers } from './seed/seed';
 
 beforeEach(populateUsers);
@@ -320,12 +320,17 @@ describe('POST /users/login', () => {
 				}
 
 				User.findById(users[1]._id)
-					.then(user => {
-						expect(user.toObject().tokens[1]).toMatchObject({
-							access: 'auth',
-							token: res.headers['x-auth']
-						});
-						done();
+					.then(foundUser => {
+						if (foundUser) {
+							const user = foundUser.toObject() as IUser;
+							expect(user.tokens[1]).toMatchObject({
+								access: 'auth',
+								token: res.headers['x-auth']
+							});
+							done();
+						} else {
+							return done('User not found');
+						}
 					})
 					.catch(e => done(e));
 			});
@@ -349,8 +354,12 @@ describe('POST /users/login', () => {
 
 				User.findById(users[1]._id)
 					.then(user => {
-						expect(user.tokens.length).toBe(1);
-						done();
+						if (user) {
+							expect(user.tokens.length).toBe(1);
+							done();
+						} else {
+							done('user not found');
+						}
 					})
 					.catch(e => done(e));
 			});
@@ -370,8 +379,12 @@ describe('DELETE /users/me/token', () => {
 
 				User.findById(users[0]._id)
 					.then(user => {
-						expect(user.tokens.length).toBe(0);
-						done();
+						if (user) {
+							expect(user.tokens.length).toBe(0);
+							done();
+						} else {
+							done('user not found');
+						}
 					})
 					.catch(e => done(e));
 			});
