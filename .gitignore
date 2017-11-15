@@ -1,6 +1,6 @@
 .vscode
 node_modules
 package-lock.json
-server/config/config.json
+server/config/configs.json
 playground
 lib
