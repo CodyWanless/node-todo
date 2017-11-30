@@ -10,4 +10,8 @@ export class GoogleAccessToken implements IAccessToken {
         this.access = 'auth';
         this.strategy = 'google';
     }
+
+    public verify(): boolean {
+        return this.token.length > 0;
+    }
 }

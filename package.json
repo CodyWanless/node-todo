@@ -5,7 +5,7 @@
 	"main": "lib/index",
 	"types": "lib/index",
 	"scripts": {
-		"start": "tsc && node lib/server.js",
+		"start": "tsc && cp -r server/config/configs.json lib/config/configs.json && node lib/server.js",
 		"start-dev": "npm run build:live",
 		"build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./server/server.ts",
 		"test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha -r ts-node/register server/**/*.test.ts",

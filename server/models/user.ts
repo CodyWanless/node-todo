@@ -6,16 +6,19 @@ import * as bcrypt from 'bcryptjs';
 import { IUserDocument } from '../interfaces/user';
 import { IAccessToken } from '../interfaces/access-token';
 import { LocalAccessToken } from './local-access-token';
+import { GoogleAccessToken } from './google-access-token';
+import AccessTokenFactory from './access-token-factory';
 
 export interface IUser extends IUserDocument {
 	toJSON(): string;
 	generateAuthToken(): string;
+	addTokenAndSave(token: IAccessToken): void;
 	removeToken(token: IAccessToken): string[];
 }
 
 export interface IUserModel extends Model<IUser> {
 	findByToken(token: string): IUser;
-	findByCredentials(email: string, password: string): IUser;
+	findByCredentials(email: string, password?: string): IUser;
 }
 
 const accessTokenSchema = new Schema({
@@ -30,7 +33,6 @@ const accessTokenSchema = new Schema({
 const userSchema = new Schema({
 	email: {
 		type: String,
-		required: true,
 		minlength: 1,
 		trim: true,
 		unique: true,
@@ -41,26 +43,27 @@ const userSchema = new Schema({
 	},
 	password: {
 		type: String,
-		required: true,
 		minlength: 6
 	},
 	tokens: [accessTokenSchema]
 });
 
-userSchema.statics.findByToken = function (token) {
-	let decoded;
-
-	try {
-		decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-	} catch (e) {
-		return Promise.reject(e.toString());
-	}
-
-	return this.findOne({
-		_id: decoded._id,
+userSchema.statics.findByToken = async function (token) {
+	const user = await this.findOne({
 		'tokens.token': token,
 		'tokens.access': 'auth'
 	});
+
+	if (!user) {
+		return null;
+	}
+
+	const userToken = AccessTokenFactory(user.tokens.filter(x => x.token === token)[0]);
+	if (userToken && userToken.verify()) {
+		return user;
+	}
+
+	return null;
 };
 
 userSchema.methods.toJSON = function () {
@@ -82,6 +85,12 @@ userSchema.methods.generateAuthToken = function () {
 	});
 };
 
+userSchema.methods.addTokenAndSave = function (token: IAccessToken) {
+	this.tokens.push(token);
+
+	return this.save();
+};
+
 userSchema.methods.removeToken = function (token) {
 	return this.update({
 		$pull: {
@@ -96,15 +105,19 @@ userSchema.statics.findByCredentials = function (email, password) {
 			return Promise.reject('User not found');
 		}
 
-		return new Promise((resolve, reject) => {
-			bcrypt.compare(password, user.password, (err, res) => {
-				if (res) {
-					resolve(user);
-				} else {
-					reject();
-				}
+		if (password && user.password) {
+			return new Promise((resolve, reject) => {
+				bcrypt.compare(password, user.password, (err, res) => {
+					if (res) {
+						resolve(user);
+					} else {
+						reject();
+					}
+				});
 			});
-		});
+		} else {
+			return Promise.resolve(user);
+		}
 	});
 };
 

@@ -10,6 +10,10 @@ const registerRoutes = (app, authenticate) => {
 
 	app.post('/local/users', async (req, res) => {
 		const body = _.pick(req.body, ['email', 'password']);
+		if (!body.email && !body.password) {
+			return res.status(400).send();
+		}
+
 		var user = new User(body);
 		try {
 			await user.save();
