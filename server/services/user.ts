@@ -1,10 +1,14 @@
 import { ObjectID } from 'mongodb';
 import * as _ from 'lodash';
+import * as passport from 'passport';
 
+import localAuthorizationRegister from '../passport/local-strategy';
 import { User } from '../models/user';
 
 const registerRoutes = (app, authenticate) => {
-	app.post('/users', async (req, res) => {
+	localAuthorizationRegister();
+
+	app.post('/local/users', async (req, res) => {
 		const body = _.pick(req.body, ['email', 'password']);
 		var user = new User(body);
 		try {
@@ -21,17 +25,15 @@ const registerRoutes = (app, authenticate) => {
 		res.send(req.user);
 	});
 
-	app.post('/users/login', async (req, res) => {
-		const body = _.pick(req.body, ['email', 'password']);
-
-		try {
-			const user = await User.findByCredentials(body.email, body.password);
-			const token = await user.generateAuthToken();
-			res.header('x-auth', token).send(user);
-		} catch (e) {
-			res.status(400).send();
-		}
-	});
+	app.post('/users/login', passport.authenticate('local', { session: false }),
+		(req, res) => {
+			try {
+				const { user, token } = req.user;
+				res.header('x-auth', token).send(user);
+			} catch (e) {
+				res.status(400).send();
+			}
+		});
 
 	app.delete('/users/me/token', authenticate, async (req, res) => {
 		try {

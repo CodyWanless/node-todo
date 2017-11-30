@@ -254,7 +254,7 @@ describe('POST /users', () => {
 		const password = 'abc123!';
 
 		request(app)
-			.post('/users')
+			.post('/local/users')
 			.send({ email, password })
 			.expect(200)
 			.expect(res => {
@@ -279,12 +279,12 @@ describe('POST /users', () => {
 			});
 	});
 
-	it('should return valdiation errors if request invalid', done => {
+	it('should return validation errors if request invalid', done => {
 		const email = 'merp';
 		const password = 'merp';
 
 		request(app)
-			.post('/users')
+			.post('/local/users')
 			.send({ email, password })
 			.expect(400)
 			.end(done);
@@ -295,7 +295,7 @@ describe('POST /users', () => {
 		const password = 'thisisapassword';
 
 		request(app)
-			.post('/users')
+			.post('/local/users')
 			.send({ email, password })
 			.expect(400)
 			.end(done);
@@ -343,7 +343,7 @@ describe('POST /users/login', () => {
 				email: users[1].email,
 				password: 'derp'
 			})
-			.expect(400)
+			.expect(401)
 			.expect(res => {
 				expect(res.headers['x-auth']).toBeFalsy();
 			})
