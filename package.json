@@ -36,6 +36,7 @@
 		"@types/mongodb": "^2.2.15",
 		"@types/mongoose": "^4.7.27",
 		"@types/node": "^8.0.51",
+		"@types/passport-google-oauth2": "^0.1.1",
 		"expect": "^21.1.0",
 		"mocha": "^3.0.2",
 		"nodemon": "^1.10.2",

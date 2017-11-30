@@ -4,3 +4,4 @@ package-lock.json
 server/config/configs.json
 playground
 lib
+.vs

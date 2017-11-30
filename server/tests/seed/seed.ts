@@ -2,6 +2,7 @@ import { ObjectID } from 'mongodb';
 import { Todo } from './../../models/todo';
 import { User } from './../../models/user';
 import * as jwt from 'jsonwebtoken';
+import { LocalAccessToken } from '../../models/local-access-token';
 
 const secretKey: string = process.env.JWT_SECRET as string;
 const userOneId = new ObjectID();
@@ -13,12 +14,7 @@ const users = [
 		email: 'andrew@example.com',
 		password: 'userOnePass',
 		tokens: [
-			{
-				access: 'auth',
-				token: jwt
-					.sign({ _id: userOneId, access: 'auth' }, secretKey)
-					.toString()
-			}
+			new LocalAccessToken('auth', jwt.sign({ _id: userOneId, access: 'auth' }, secretKey).toString())
 		]
 	},
 	{
@@ -26,12 +22,7 @@ const users = [
 		email: 'jen@example.com',
 		password: 'userTwoPass',
 		tokens: [
-			{
-				access: 'auth',
-				token: jwt
-					.sign({ _id: userTwoId, access: 'auth' }, secretKey)
-					.toString()
-			}
+			new LocalAccessToken('auth', jwt.sign({ _id: userTwoId, access: 'auth' }, secretKey).toString())
 		]
 	}
 ];
