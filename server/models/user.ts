@@ -12,7 +12,7 @@ import AccessTokenFactory from './access-token-factory';
 export interface IUser extends IUserDocument {
 	toJSON(): string;
 	generateAuthToken(): string;
-	addTokenAndSave(token: IAccessToken): void;
+	addTokenAndSave(token: IAccessToken): Promise<void>;
 	removeToken(token: IAccessToken): string[];
 }
 
@@ -49,21 +49,25 @@ const userSchema = new Schema({
 });
 
 userSchema.statics.findByToken = async function (token) {
-	const user = await this.findOne({
-		'tokens.token': token,
-		'tokens.access': 'auth'
-	});
+	try {
+		const user: IUser = await this.findOne({
+			'tokens.token': token,
+			'tokens.access': 'auth'
+		});
+		if (!user) {
+			return null;
+		}
 
-	if (!user) {
+		const userToken = AccessTokenFactory(user.tokens.filter(x => x.token === token)[0]);
+		if (userToken && userToken.verify()) {
+			return user;
+		}
+
+		return null;
+	} catch (e) {
+		console.log(e);
 		return null;
 	}
-
-	const userToken = AccessTokenFactory(user.tokens.filter(x => x.token === token)[0]);
-	if (userToken && userToken.verify()) {
-		return user;
-	}
-
-	return null;
 };
 
 userSchema.methods.toJSON = function () {

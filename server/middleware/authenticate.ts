@@ -6,7 +6,7 @@ const authenticate = async (req, res, next) => {
 	try {
 		const user = await User.findByToken(token);
 		if (!user) {
-			return Promise.reject('User not found');
+			return res.status(401).send();
 		}
 
 		req.user = user;

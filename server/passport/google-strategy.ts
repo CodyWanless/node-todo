@@ -20,15 +20,13 @@ export default () => passport.use(
                         user = new User({ email });
                     }
 
-                    console.log(user);
-                    const token = await user.addTokenAndSave(new GoogleAccessToken(accessToken));
-                    return done(null, {
-                        user,
-                        token
-                    });
+                    await user.addTokenAndSave(new GoogleAccessToken(accessToken));
                 }
 
-                return done(null, user);
+                return done(null, {
+                    user,
+                    token: accessToken
+                });
             } catch (e) {
                 return done(e);
             }

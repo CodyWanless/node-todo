@@ -8,7 +8,7 @@ import registerGoogleAuthRoutes from './services/google-auth';
 import { authenticate } from './middleware/authenticate';
 
 export default class App {
-	public expressApp;
+	public readonly expressApp;
 	private port: number;
 
 	constructor() {

@@ -1,5 +1,6 @@
-import { IAccessToken } from "../interfaces/access-token";
 import * as jwt from 'jsonwebtoken';
+
+import { IAccessToken } from "../interfaces/access-token";
 
 export class LocalAccessToken implements IAccessToken {
     public readonly access: string;
